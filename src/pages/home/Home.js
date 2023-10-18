@@ -1,17 +1,15 @@
 import { useEffect, useState, useMemo } from "react";
 import {
-  AppBar,
-  Button,
   CssBaseline,
   Grid,
   Box,
-  Toolbar,
   Typography,
   Container,
   Skeleton,
+  Pagination,
 } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
-import { Add, CatchingPokemonOutlined, SearchOff } from "@mui/icons-material";
+import { SearchOff } from "@mui/icons-material";
 import { getAllPokemons } from "../../services/PokemonServices";
 import SearchInput from "../../shared/components/SearchInput";
 import CardPokemon from "../../shared/components/CardPokemon";
@@ -31,23 +29,30 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
+  const [count, setCount] = useState(0);
+
+  const handleChange = (ev, value) => {
+    setPage(value);
+  };
 
   const dataFiltered = useMemo(
     () => filterData(searchQuery, allPokemons),
     [searchQuery, allPokemons]
   );
 
-  const getAll = async () => {
+  const getAllByPage = async () => {
     try {
       setLoading(true);
 
-      let pokemons = await getAllPokemons(page);
+      let res = await getAllPokemons(page, count);
 
-      if (pokemons) {
-        const pokemonsTotal = [...allPokemons, ...pokemons];
-
+      if (count < 1) {
+        setCount(res.count);
         setPage(page + 1);
-        setAllPokemons(pokemonsTotal);
+      }
+
+      if (res.pokemons) {
+        setAllPokemons(res.pokemons);
       }
     } finally {
       setLoading(false);
@@ -55,8 +60,8 @@ export default function Home() {
   };
 
   useEffect(() => {
-    getAll();
-  }, []);
+    getAllByPage();
+  }, [page]);
 
   return (
     <ThemeProvider theme={themeDefault}>
@@ -101,7 +106,7 @@ export default function Home() {
         </Box>
         <Container sx={{ py: 8 }}>
           <Grid container spacing={3}>
-            {dataFiltered && dataFiltered.length > 0 ? (
+            {!loading && dataFiltered && dataFiltered.length > 0 ? (
               dataFiltered.map((pokemon) => (
                 <Grid item key={pokemon.name} xs={11} sm={5} md={3}>
                   <CardPokemon pokemon={pokemon}></CardPokemon>
@@ -129,17 +134,33 @@ export default function Home() {
             {loading &&
               Array.from(Array(20).keys()).map((value) => (
                 <Grid item key={value} xs={11} sm={5} md={3}>
-                  <Skeleton
-                    sx={{
-                      height: 500,
-                      display: "flex",
-                      flexDirection: "column",
-                    }}
-                  ></Skeleton>
+                  <Skeleton variant="rounded" height={360} />
                 </Grid>
               ))}
           </Grid>
-          <Container
+
+          {page > 0 && (
+            <Container
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                pt: 3,
+              }}
+            >
+              <Pagination
+                count={Math.ceil(count / 20) + 1}
+                shape="rounded"
+                size="large"
+                defaultPage={1}
+                siblingCount={5}
+                onChange={handleChange}
+                color="primary"
+              />
+            </Container>
+          )}
+
+          {/* <Container
             sx={{
               display: "flex",
               flexDirection: "row",
@@ -156,7 +177,7 @@ export default function Home() {
             >
               Carregar mais
             </Button>
-          </Container>
+          </Container> */}
         </Container>
       </main>
     </ThemeProvider>

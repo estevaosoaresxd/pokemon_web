@@ -1,25 +1,44 @@
 import axios from "axios";
 
-const pageBase = 1;
+const pageBase = 0;
 const takeBase = 20;
 
-const getAllPokemons = async (page, take) => {
-  console.log();
+const getAllPokemons = async (page, count) => {
+  if (page) page = page - 1;
 
-  var results = await axios
+  let offset;
+
+  if (count > 1) {
+    var offsetTotal = (page ?? pageBase) * takeBase;
+
+    console.log(offsetTotal);
+
+    if (offsetTotal > count) {
+      offset = count - takeBase;
+    } else {
+      offset = offsetTotal;
+    }
+  }
+
+  var res = await axios
     .get(`${process.env.REACT_APP_API_URL}/pokemon`, {
       params: {
-        limit: take ?? takeBase,
-        offset: (page ?? pageBase) * (take ?? takeBase),
+        limit: takeBase,
+        offset: offset,
       },
     })
-    .then((e) => e.data.results);
+    .then((e) => e.data);
 
   var all = await axios.all(
-    results.map((pokemon, index) => axios.get(pokemon.url).then((e) => e.data))
+    res.results.map((pokemon, index) =>
+      axios.get(pokemon.url).then((e) => e.data)
+    )
   );
 
-  return all;
+  return {
+    count: res.count,
+    pokemons: all,
+  };
 };
 
 const findPokemonByNameOrId = async (nameOrId) => {
