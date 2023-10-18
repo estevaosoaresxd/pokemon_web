@@ -1,45 +1,68 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Button from "@mui/material/Button";
-import CameraIcon from "@mui/icons-material/PhotoCamera";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import CssBaseline from "@mui/material/CssBaseline";
-import Grid from "@mui/material/Grid";
-import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
+import { useEffect, useState, useMemo } from "react";
+import {
+  AppBar,
+  Button,
+  CssBaseline,
+  Grid,
+  Box,
+  Toolbar,
+  Typography,
+  Container,
+  Skeleton,
+} from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
-import { CatchingPokemonOutlined } from "@mui/icons-material";
-import { Theme } from "../../shared/theme/Theme";
+import { Add, CatchingPokemonOutlined, SearchOff } from "@mui/icons-material";
+import { theme } from "../../shared/theme/theme";
 import { getAllPokemons } from "../../services/PokemonServices";
+import SearchInput from "../../shared/components/SearchInput";
+import CardPokemon from "../../shared/components/CardPokemon";
+import ToolbarDefault from "../../shared/components/ToolbarDefault";
 
-const pokemons = [];
+const filterData = (query, data) => {
+  if (!query) {
+    return data;
+  } else {
+    return data.filter((pokemon) => pokemon.name.toLowerCase().includes(query));
+  }
+};
 
 export default function Home() {
+  const [allPokemons, setAllPokemons] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+
+  const dataFiltered = useMemo(
+    () => filterData(searchQuery, allPokemons),
+    [searchQuery, allPokemons]
+  );
+
   const getAll = async () => {
-    await getAllPokemons().then((res) => console.log(res));
+    try {
+      setLoading(true);
+
+      let pokemons = await getAllPokemons(page);
+
+      if (pokemons) {
+        const pokemonsTotal = [...allPokemons, ...pokemons];
+
+        setPage(page + 1);
+        setAllPokemons(pokemonsTotal);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
-  getAll();
+  useEffect(() => {
+    getAll();
+  }, []);
 
   return (
-    <ThemeProvider theme={Theme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppBar position="relative">
-        <Toolbar>
-          <CatchingPokemonOutlined fontSize="large" sx={{ mr: 2 }} />
-          <Typography variant="h6" color="inherit" noWrap>
-            Pokemon
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <ToolbarDefault />
       <main>
-        {/* Hero unit */}
         <Box
           sx={{
             bgcolor: "background.paper",
@@ -68,60 +91,74 @@ export default function Home() {
             </Typography>
           </Container>
         </Box>
-        <Container sx={{ py: 8 }} maxWidth="md">
-          {/* End hero unit */}
-          <Grid container spacing={4}>
-            {pokemons.map((card) => (
-              <Grid item key={card} xs={12} sm={6} md={4}>
-                <Card
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
+        <Box>
+          <Container maxWidth="sm">
+            <SearchInput
+              placeholder="Digite o pokemon"
+              onChange={setSearchQuery}
+            ></SearchInput>
+          </Container>
+        </Box>
+        <Container sx={{ py: 8 }}>
+          <Grid container spacing={3}>
+            {dataFiltered && dataFiltered.length > 0 ? (
+              dataFiltered.map((pokemon) => (
+                <Grid item key={pokemon.name} xs={11} sm={5} md={3}>
+                  <CardPokemon pokemon={pokemon}></CardPokemon>
+                </Grid>
+              ))
+            ) : !loading ? (
+              <Container
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                }}
+              >
+                <SearchOff sx={{ fontSize: 40, mr: 1 }} />
+                <Typography
+                  variant="h5"
+                  align="center"
+                  color="text.secondary"
+                  paragraph
                 >
-                  <CardMedia
-                    component="div"
+                  Nenhum pokemon encontrado
+                </Typography>
+              </Container>
+            ) : null}
+            {loading &&
+              Array.from(Array(20).keys()).map((value) => (
+                <Grid item key={value} xs={11} sm={5} md={3}>
+                  <Skeleton
                     sx={{
-                      // 16:9
-                      pt: "56.25%",
+                      height: 500,
+                      display: "flex",
+                      flexDirection: "column",
                     }}
-                    image="https://source.unsplash.com/random?wallpapers"
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      Heading
-                    </Typography>
-                    <Typography>
-                      This is a media card. You can use this section to describe
-                      the content.
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button size="small">View</Button>
-                    <Button size="small">Edit</Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
+                  ></Skeleton>
+                </Grid>
+              ))}
           </Grid>
+          <Container
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              pt: 8,
+              pb: 6,
+            }}
+          >
+            <Button
+              variant="outlined"
+              startIcon={<Add />}
+              onClick={getAll}
+              size="large"
+            >
+              Carregar mais
+            </Button>
+          </Container>
         </Container>
       </main>
-      {/* Footer */}
-      <Box sx={{ bgcolor: "background.paper", p: 6 }} component="footer">
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
-        >
-          Something here to give the footer a purpose!
-        </Typography>
-      </Box>
-      {/* End footer */}
     </ThemeProvider>
   );
 }
