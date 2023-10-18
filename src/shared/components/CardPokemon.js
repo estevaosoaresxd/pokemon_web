@@ -1,4 +1,9 @@
-import { Add } from "@mui/icons-material";
+import {
+  Add,
+  BrokenImage,
+  HideImage,
+  HideImageOutlined,
+} from "@mui/icons-material";
 import {
   Card,
   CardMedia,
@@ -51,6 +56,13 @@ const verifyTypeColor = (type) => {
 };
 
 export default function CardPokemon({ pokemon, onTap }) {
+  console.log(
+    pokemon.sprites.front_default ? (
+      pokemon.sprites.front_default
+    ) : (
+      <BrokenImage />
+    )
+  );
   return (
     <Card
       sx={{
@@ -62,11 +74,25 @@ export default function CardPokemon({ pokemon, onTap }) {
     >
       <CardMedia
         component="div"
-        sx={{
-          pt: "100%",
-        }}
+        sx={
+          pokemon.sprites.front_default
+            ? {
+                pt: "100%",
+              }
+            : {
+                display: "flex",
+                justifyContent: "center",
+              }
+        }
+        src={<BrokenImage />}
         image={pokemon.sprites.front_default}
+        children={
+          !pokemon.sprites.front_default && (
+            <HideImageOutlined sx={{ width: 200, height: 200 }} />
+          )
+        }
       />
+
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography gutterBottom variant="h5" component="h2">
           {pokemon.name.toUpperCase()}

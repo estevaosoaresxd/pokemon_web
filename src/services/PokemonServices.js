@@ -13,11 +13,7 @@ const getAllPokemons = async (page, count) => {
 
     console.log(offsetTotal);
 
-    if (offsetTotal > count) {
-      offset = count - takeBase;
-    } else {
-      offset = offsetTotal;
-    }
+    offset = offsetTotal > count ? count - takeBase : offsetTotal;
   }
 
   var res = await axios
@@ -30,9 +26,7 @@ const getAllPokemons = async (page, count) => {
     .then((e) => e.data);
 
   var all = await axios.all(
-    res.results.map((pokemon, index) =>
-      axios.get(pokemon.url).then((e) => e.data)
-    )
+    res.results.map((pokemon) => axios.get(pokemon.url).then((e) => e.data))
   );
 
   return {
