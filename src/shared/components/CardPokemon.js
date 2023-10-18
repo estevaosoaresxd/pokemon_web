@@ -11,6 +11,8 @@ import {
   Typography,
   Button,
   CardActions,
+  colors,
+  Box,
 } from "@mui/material";
 
 const typeHandler = (types) => {
@@ -23,35 +25,41 @@ const typeHandler = (types) => {
 const verifyTypeColor = (type) => {
   switch (type) {
     case "grass":
-      return "green";
+      return colors.green[900];
     case "poison":
-      return "purple";
+      return colors.purple[900];
     case "fire":
-      return "orange";
+      return colors.orange[800];
     case "flying":
-      return "grey";
+      return colors.lightBlue[100];
     case "water":
-      return "blue";
+      return colors.blue[700];
     case "bug":
-      return "greenAccent";
+      return colors.lightGreen.A700;
     case "normal":
-      return "black";
-    case "eletric":
-      return "yellow";
+      return colors.grey[600];
+    case "electric":
+      return colors.yellow.A700;
     case "ground":
-      return "brown";
+      return colors.deepOrange[700];
     case "fairy":
-      return "pink";
-    case "fighitig":
-      return "red";
+      return colors.pink[500];
+    case "fighting":
+      return colors.red[600];
     case "psychic":
-      return "black";
+      return colors.red[300];
     case "rock":
-      return "grey";
+      return colors.brown.A700;
     case "ice":
-      return "blueGrey";
+      return colors.lightBlue[300];
     case "dragon":
-      return "orangeAccent";
+      return colors.blue[900];
+    case "ghost":
+      return colors.deepPurple[400];
+    case "dark":
+      return colors.common.black;
+    case "steel":
+      return colors.blueGrey[500];
   }
 };
 
@@ -69,6 +77,10 @@ export default function CardPokemon({ pokemon, onTap }) {
         height: "100%",
         display: "flex",
         flexDirection: "column",
+        borderRadius: 5,
+        backgroundImage: `linear-gradient(180deg, ${verifyTypeColor(
+          pokemon.types[0].type.name
+        )},white)`,
       }}
       onClick={onTap}
     >
@@ -77,7 +89,11 @@ export default function CardPokemon({ pokemon, onTap }) {
         sx={
           pokemon.sprites.front_default
             ? {
-                pt: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignSelf: "center",
+                height: "20vh",
+                width: 200,
               }
             : {
                 display: "flex",
@@ -88,7 +104,7 @@ export default function CardPokemon({ pokemon, onTap }) {
         image={pokemon.sprites.front_default}
         children={
           !pokemon.sprites.front_default && (
-            <HideImageOutlined sx={{ width: 200, height: 200 }} />
+            <HideImageOutlined sx={{ height: "15vh", width: 200 }} />
           )
         }
       />
@@ -97,10 +113,29 @@ export default function CardPokemon({ pokemon, onTap }) {
         <Typography gutterBottom variant="h5" component="h2">
           {pokemon.name.toUpperCase()}
         </Typography>
-        <Typography>{typeHandler(pokemon.types)}</Typography>
+        <Box>
+          {pokemon.types.map((types) => (
+            <Button
+              variant="contained"
+              sx={{
+                fontSize: 16,
+                backgroundColor: verifyTypeColor(types.type.name),
+                borderRadius: 5,
+                mr: 1,
+              }}
+            >
+              {types.type.name}
+            </Button>
+          ))}
+        </Box>
       </CardContent>
       <CardActions
-        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 0,
+        }}
       >
         <Button
           startIcon={<Add />}
@@ -108,7 +143,7 @@ export default function CardPokemon({ pokemon, onTap }) {
           variant="contained"
           sx={{ fontSize: 16, width: "100%" }}
         >
-          Detalhes
+          DETALHES
         </Button>
       </CardActions>
     </Card>

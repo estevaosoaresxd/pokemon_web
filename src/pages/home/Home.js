@@ -31,14 +31,14 @@ export default function Home() {
   const [page, setPage] = useState(0);
   const [count, setCount] = useState(0);
 
-  const handleChange = (ev, value) => {
-    setPage(value);
-  };
-
   const dataFiltered = useMemo(
     () => filterData(searchQuery, allPokemons),
     [searchQuery, allPokemons]
   );
+
+  const handleChange = (ev, value) => {
+    setPage(value);
+  };
 
   const getAllByPage = async () => {
     try {
