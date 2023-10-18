@@ -10,26 +10,51 @@ import {
 } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { SearchOff } from "@mui/icons-material";
-import { getAllPokemons } from "../../services/PokemonServices";
+import {
+  getAllPokemons,
+  getPokemonByNameOrId,
+} from "../../services/PokemonServices";
 import SearchInput from "../../shared/components/SearchInput";
 import CardPokemon from "../../shared/components/CardPokemon";
 import ToolbarDefault from "../../shared/components/ToolbarDefault";
 import { themeDefault } from "../../shared/theme/themeDefault";
 
-const filterData = (query, data) => {
-  if (!query) {
-    return data;
-  } else {
-    return data.filter((pokemon) => pokemon.name.toLowerCase().includes(query));
-  }
-};
-
 export default function Home() {
   const [allPokemons, setAllPokemons] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
+
+  const filterData = (query, data) => {
+    if (!query) {
+      return data;
+    } else {
+      let filtered = data.filter((pokemon) =>
+        pokemon.name.toLowerCase().includes(query)
+      );
+
+      if (filtered.length == 0) {
+        const getPokemonByName = async () => {
+          try {
+            setLoading(true);
+
+            let res = await getPokemonByNameOrId(query);
+
+            setAllPokemons([...allPokemons, res]);
+          } catch (e) {
+            return [];
+          } finally {
+            setLoading(false);
+          }
+        };
+
+        return getPokemonByName(query);
+      } else {
+        return filtered;
+      }
+    }
+  };
 
   const dataFiltered = useMemo(
     () => filterData(searchQuery, allPokemons),
@@ -40,26 +65,23 @@ export default function Home() {
     setPage(value);
   };
 
-  const getAllByPage = async () => {
-    try {
-      setLoading(true);
-
-      let res = await getAllPokemons(page, count);
-
-      if (count < 1) {
-        setCount(res.count);
-        setPage(page + 1);
-      }
-
-      if (res.pokemons) {
-        setAllPokemons(res.pokemons);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const getAllByPage = async () => {
+      try {
+        setLoading(true);
+
+        let res = await getAllPokemons(page, count);
+
+        setCount(res.count);
+
+        if (res.pokemons) {
+          setAllPokemons(res.pokemons);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
     getAllByPage();
   }, [page]);
 
@@ -159,25 +181,6 @@ export default function Home() {
               />
             </Container>
           )}
-
-          {/* <Container
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-              pt: 8,
-              pb: 6,
-            }}
-          >
-            <Button
-              variant="outlined"
-              startIcon={<Add />}
-              onClick={getAll}
-              size="large"
-            >
-              Carregar mais
-            </Button>
-          </Container> */}
         </Container>
       </main>
     </ThemeProvider>

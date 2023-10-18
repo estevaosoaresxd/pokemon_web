@@ -11,8 +11,6 @@ const getAllPokemons = async (page, count) => {
   if (count > 1) {
     var offsetTotal = (page ?? pageBase) * takeBase;
 
-    console.log(offsetTotal);
-
     offset = offsetTotal > count ? count - takeBase : offsetTotal;
   }
 
@@ -35,10 +33,12 @@ const getAllPokemons = async (page, count) => {
   };
 };
 
-const findPokemonByNameOrId = async (nameOrId) => {
-  return await axios.get(
-    `${process.env.REACT_APP_API_URL}/pokemon/${nameOrId}`
-  );
+const getPokemonByNameOrId = async (nameOrId) => {
+  return await axios
+    .get(`${process.env.REACT_APP_API_URL}/pokemon/${nameOrId}`)
+    .then((res) => res.data);
+
+  // return res;
 };
 
-export { getAllPokemons, findPokemonByNameOrId };
+export { getAllPokemons, getPokemonByNameOrId };
