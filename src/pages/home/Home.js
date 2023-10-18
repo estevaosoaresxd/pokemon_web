@@ -12,11 +12,11 @@ import {
 } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { Add, CatchingPokemonOutlined, SearchOff } from "@mui/icons-material";
-import { theme } from "../../shared/theme/theme";
 import { getAllPokemons } from "../../services/PokemonServices";
 import SearchInput from "../../shared/components/SearchInput";
 import CardPokemon from "../../shared/components/CardPokemon";
 import ToolbarDefault from "../../shared/components/ToolbarDefault";
+import { themeDefault } from "../../shared/theme/themeDefault";
 
 const filterData = (query, data) => {
   if (!query) {
@@ -59,7 +59,7 @@ export default function Home() {
   }, []);
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={themeDefault}>
       <CssBaseline />
       <ToolbarDefault />
       <main>
