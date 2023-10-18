@@ -13,14 +13,8 @@ import {
   CardActions,
   colors,
   Box,
+  CardActionArea,
 } from "@mui/material";
-
-const typeHandler = (types) => {
-  if (types[1]) {
-    return types[0].type.name + "  " + types[1].type.name;
-  }
-  return types[0].type.name;
-};
 
 const verifyTypeColor = (type) => {
   switch (type) {
@@ -74,78 +68,88 @@ export default function CardPokemon({ pokemon, onTap }) {
   return (
     <Card
       sx={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
         borderRadius: 5,
         backgroundImage: `linear-gradient(180deg, ${verifyTypeColor(
           pokemon.types[0].type.name
         )},white)`,
       }}
-      onClick={onTap}
     >
-      <CardMedia
-        component="div"
-        sx={
-          pokemon.sprites.front_default
-            ? {
-                display: "flex",
-                flexDirection: "column",
-                alignSelf: "center",
-                height: "20vh",
-                width: 200,
-              }
-            : {
-                display: "flex",
-                justifyContent: "center",
-              }
-        }
-        src={<BrokenImage />}
-        image={pokemon.sprites.front_default}
-        children={
-          !pokemon.sprites.front_default && (
-            <HideImageOutlined sx={{ height: "15vh", width: 200 }} />
-          )
-        }
-      />
-
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography gutterBottom variant="h5" component="h2">
-          {pokemon.name.toUpperCase()}
-        </Typography>
-        <Box>
-          {pokemon.types.map((types) => (
-            <Button
-              variant="contained"
-              sx={{
-                fontSize: 16,
-                backgroundColor: verifyTypeColor(types.type.name),
-                borderRadius: 5,
-                mr: 1,
-              }}
-            >
-              {types.type.name}
-            </Button>
-          ))}
-        </Box>
-      </CardContent>
-      <CardActions
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 0,
-        }}
+      <CardActionArea
+        sx={{ display: "flex", flexDirection: "column", alignItems: "stretch" }}
       >
-        <Button
-          startIcon={<Add />}
-          onClick={onTap}
-          variant="contained"
-          sx={{ fontSize: 16, width: "100%" }}
+        <CardMedia
+          component="div"
+          sx={
+            pokemon.sprites.front_default
+              ? {
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  height: "20vh",
+                  width: 200,
+                }
+              : {
+                  display: "flex",
+                  justifyContent: "center",
+                }
+          }
+          src={<BrokenImage />}
+          image={pokemon.sprites.front_default}
+          children={
+            !pokemon.sprites.front_default && (
+              <HideImageOutlined sx={{ height: "15vh", width: 200 }} />
+            )
+          }
+        />
+
+        <CardContent sx={{ flexGrow: 1 }}>
+          <Typography
+            gutterBottom
+            variant="h5"
+            component="h2"
+            fontWeight="bold"
+            sx={{
+              color: colors.common.white,
+              textShadow: `${colors.grey[500]} -1px 1px`,
+            }}
+          >
+            {pokemon.name.toUpperCase()}
+          </Typography>
+          <Box>
+            {pokemon.types.map((types) => (
+              <Button
+                variant="contained"
+                sx={{
+                  fontSize: 16,
+                  backgroundColor: verifyTypeColor(types.type.name),
+                  borderRadius: 5,
+                  mr: 1,
+                }}
+              >
+                {types.type.name}
+              </Button>
+            ))}
+          </Box>
+        </CardContent>
+        <CardActions
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 0,
+          }}
         >
-          DETALHES
-        </Button>
-      </CardActions>
+          <Button
+            startIcon={<Add />}
+            onClick={onTap}
+            variant="contained"
+            sx={{ fontSize: 16, width: "100%" }}
+          >
+            DETALHES
+          </Button>
+        </CardActions>
+      </CardActionArea>
     </Card>
   );
 }
