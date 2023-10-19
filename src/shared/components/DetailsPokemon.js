@@ -15,8 +15,12 @@ import { verifyTypeColor } from "../utils/utils_pokemons";
 import {
   CatchingPokemonOutlined,
   Close,
+  HeightOutlined,
   HideImageOutlined,
+  LineWeight,
   List,
+  MonitorWeight,
+  MonitorWeightOutlined,
 } from "@mui/icons-material";
 import LinearProgress, {
   linearProgressClasses,
@@ -95,24 +99,33 @@ export default function DetailsPokemon({ pokemon, open, handleClose }) {
               ) : (
                 <HideImageOutlined sx={{ height: "15vh", width: 200 }} />
               )}
-              <Typography id="transition-modal-description">
+
+              <Typography variant="h6" fontWeight="bold">
                 #{pokemon.id}
               </Typography>
+
               <Typography
                 id="transition-modal-title"
-                variant="h6"
-                component="h2"
+                variant="h5"
+                fontWeight="bold"
               >
                 {pokemon.name.toUpperCase()}
               </Typography>
 
-              <Box>
+              <Box mt={2}>
                 {pokemon.types.map((types) => (
                   <Button
                     variant="contained"
                     sx={{
                       fontSize: 16,
                       backgroundColor: verifyTypeColor(types.type.name),
+                      ":focus": {
+                        backgroundColor: verifyTypeColor(types.type.name),
+                      },
+
+                      ":hover": {
+                        backgroundColor: verifyTypeColor(types.type.name),
+                      },
                       borderRadius: 5,
                       mr: 1,
                     }}
@@ -126,21 +139,56 @@ export default function DetailsPokemon({ pokemon, open, handleClose }) {
                 sx={{
                   display: "flex",
                   flexDirection: "row",
-                  justifyContent: "center",
+                  justifyContent: "space-evenly",
                 }}
               >
-                <Box>
-                  <Typography id="transition-modal-title" sx={{ mt: 2 }}>
-                    <List></List> {pokemon.weight} kg
-                  </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      mt: 3,
+                    }}
+                  >
+                    <MonitorWeightOutlined sx={{ mr: 0.5 }} />
+                    <Typography id="transition-modal-title" fontWeight="bold">
+                      {pokemon.weight} kg
+                    </Typography>
+                  </Box>
+
                   <Typography id="transition-modal-description">
                     Weight
                   </Typography>
                 </Box>
-                <Box>
-                  <Typography id="transition-modal-title" sx={{ mt: 2 }}>
-                    <List></List> {pokemon.height} m
-                  </Typography>
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      mt: 3,
+                    }}
+                  >
+                    <HeightOutlined sx={{ mr: 0.25 }} />
+                    <Typography id="transition-modal-title" fontWeight="bold">
+                      {pokemon.height} m
+                    </Typography>
+                  </Box>
+
                   <Typography id="transition-modal-description">
                     Height
                   </Typography>

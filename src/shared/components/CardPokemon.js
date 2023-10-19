@@ -77,6 +77,14 @@ export default function CardPokemon({ pokemon, onTap }) {
                 sx={{
                   fontSize: 16,
                   backgroundColor: verifyTypeColor(types.type.name),
+                  backgroundColor: verifyTypeColor(types.type.name),
+                  ":focus": {
+                    backgroundColor: verifyTypeColor(types.type.name),
+                  },
+
+                  ":hover": {
+                    backgroundColor: verifyTypeColor(types.type.name),
+                  },
                   borderRadius: 5,
                   mr: 1,
                 }}
