@@ -1,4 +1,4 @@
-import { Divider, IconButton, InputBase, Paper } from "@mui/material";
+import { Divider, IconButton, InputBase, Paper, colors } from "@mui/material";
 
 import { Search } from "@mui/icons-material";
 
@@ -17,10 +17,15 @@ export default function SearchInput({ placeholder, onChange }) {
         sx={{ ml: 1, flex: 1 }}
         placeholder={placeholder}
         inputProps={{ "aria-label": { placeholder } }}
+        onENd
+        onDragEnter={(e) => {
+          onChange(e.target.value);
+        }}
         onInput={(e) => {
           onChange(e.target.value);
         }}
       />
+
       <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
         <Search />
       </IconButton>

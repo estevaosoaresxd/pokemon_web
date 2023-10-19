@@ -35,7 +35,7 @@ const getAllPokemons = async (page, count) => {
 
 const getPokemonByNameOrId = async (nameOrId) => {
   return await axios
-    .get(`${process.env.REACT_APP_API_URL}/pokemon/${nameOrId}`)
+    .get(`${process.env.REACT_APP_API_URL}/pokemon/${nameOrId.toLowerCase()}`)
     .then((res) => res.data);
 
   // return res;
