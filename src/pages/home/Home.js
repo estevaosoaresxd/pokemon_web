@@ -7,6 +7,7 @@ import {
   Container,
   Skeleton,
   Pagination,
+  Modal,
 } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { SearchOff } from "@mui/icons-material";
@@ -18,6 +19,7 @@ import SearchInput from "../../shared/components/SearchInput";
 import CardPokemon from "../../shared/components/CardPokemon";
 import ToolbarDefault from "../../shared/components/ToolbarDefault";
 import { themeDefault } from "../../shared/theme/themeDefault";
+import DetailsPokemon from "../../shared/components/DetailsPokemon";
 
 export default function Home() {
   const [allPokemons, setAllPokemons] = useState([]);
@@ -25,6 +27,8 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedPokemon, setSelectedPokemon] = useState(null);
 
   const filterData = (query, data) => {
     if (!query) {
@@ -127,11 +131,26 @@ export default function Home() {
           </Container>
         </Box>
         <Container sx={{ py: 8 }}>
+          <DetailsPokemon
+            open={showModal}
+            pokemon={selectedPokemon}
+            handleClose={() => {
+              setSelectedPokemon(null);
+              setShowModal(false);
+            }}
+          />
+
           <Grid container spacing={3}>
             {!loading && dataFiltered && dataFiltered.length > 0 ? (
               dataFiltered.map((pokemon) => (
                 <Grid item key={pokemon.name} xs={11} sm={5} md={3}>
-                  <CardPokemon pokemon={pokemon}></CardPokemon>
+                  <CardPokemon
+                    pokemon={pokemon}
+                    onTap={() => {
+                      setSelectedPokemon(pokemon);
+                      setShowModal(true);
+                    }}
+                  ></CardPokemon>
                 </Grid>
               ))
             ) : !loading ? (
