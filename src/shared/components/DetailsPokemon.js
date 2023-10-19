@@ -94,7 +94,7 @@ export default function DetailsPokemon({ pokemon, open, handleClose }) {
                 <img
                   src={pokemon.sprites.front_default}
                   alt="Imagem Pokemon"
-                  width={250}
+                  width={"100%"}
                 />
               ) : (
                 <HideImageOutlined sx={{ height: "15vh", width: 200 }} />
