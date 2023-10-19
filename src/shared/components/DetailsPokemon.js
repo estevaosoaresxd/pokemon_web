@@ -250,7 +250,7 @@ export default function DetailsPokemon({ pokemon, open, handleClose }) {
                   >
                     <BorderLinearProgress
                       variant="determinate"
-                      value={status.base_stat}
+                      value={status.base_stat > 100 ? 100 : status.base_stat}
                     />
                   </Box>
                 </Box>

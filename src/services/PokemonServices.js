@@ -38,7 +38,6 @@ const getPokemonByNameOrId = async (nameOrId) => {
     .get(`${process.env.REACT_APP_API_URL}/pokemon/${nameOrId.toLowerCase()}`)
     .then((res) => res.data);
 
-  // return res;
 };
 
 export { getAllPokemons, getPokemonByNameOrId };

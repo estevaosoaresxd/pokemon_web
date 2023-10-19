@@ -29,8 +29,13 @@ export default function Home() {
   const [count, setCount] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [selectedPokemon, setSelectedPokemon] = useState(null);
+  const [emptyInput, setEmptyInput] = useState(false);
 
   const filterData = (query, data) => {
+    if (emptyInput) {
+      setEmptyInput(false);
+    }
+
     if (!query) {
       return data;
     } else {
@@ -65,8 +70,16 @@ export default function Home() {
     [searchQuery, allPokemons]
   );
 
-  const handleChange = (ev, value) => {
+  const handleChange = (value) => {
     setPage(value);
+  };
+
+  const onTapSearch = () => {
+    if (searchQuery.trim().length < 1) {
+      setEmptyInput(true);
+    } else {
+      filterData(searchQuery, allPokemons);
+    }
   };
 
   useEffect(() => {
@@ -127,6 +140,8 @@ export default function Home() {
             <SearchInput
               placeholder="Digite o pokemon"
               onChange={setSearchQuery}
+              emptyInput={emptyInput}
+              onTapSearch={onTapSearch}
             ></SearchInput>
           </Container>
         </Box>
@@ -175,7 +190,11 @@ export default function Home() {
             {loading &&
               Array.from(Array(20).keys()).map((value) => (
                 <Grid item key={value} xs={11} sm={5} md={3}>
-                  <Skeleton variant="rounded" height={360} />
+                  <Skeleton
+                    variant="rounded"
+                    height={360}
+                    sx={{ borderRadius: 5 }}
+                  />
                 </Grid>
               ))}
           </Grid>
@@ -195,7 +214,7 @@ export default function Home() {
                 size="large"
                 defaultPage={1}
                 siblingCount={5}
-                onChange={handleChange}
+                onChange={(ev, value) => handleChange(value)}
                 color="primary"
               />
             </Container>
