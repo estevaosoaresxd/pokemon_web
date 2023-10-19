@@ -23,13 +23,13 @@ const getAllPokemons = async (page, count) => {
     })
     .then((e) => e.data);
 
-  var all = await axios.all(
+  var pokemons = await axios.all(
     res.results.map((pokemon) => axios.get(pokemon.url).then((e) => e.data))
   );
 
   return {
     count: res.count,
-    pokemons: all,
+    pokemons: pokemons,
   };
 };
 
@@ -37,7 +37,6 @@ const getPokemonByNameOrId = async (nameOrId) => {
   return await axios
     .get(`${process.env.REACT_APP_API_URL}/pokemon/${nameOrId.toLowerCase()}`)
     .then((res) => res.data);
-
 };
 
 export { getAllPokemons, getPokemonByNameOrId };

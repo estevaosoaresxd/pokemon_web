@@ -2,7 +2,6 @@ import {
   Backdrop,
   Button,
   Container,
-  Fade,
   Modal,
   Typography,
   colors,
@@ -17,9 +16,6 @@ import {
   Close,
   HeightOutlined,
   HideImageOutlined,
-  LineWeight,
-  List,
-  MonitorWeight,
   MonitorWeightOutlined,
 } from "@mui/icons-material";
 import LinearProgress, {
@@ -95,7 +91,11 @@ export default function DetailsPokemon({ pokemon, open, handleClose }) {
               }}
             >
               {pokemon.sprites.front_default ? (
-                <img src={pokemon.sprites.front_default} width={250} />
+                <img
+                  src={pokemon.sprites.front_default}
+                  alt="Imagem Pokemon"
+                  width={250}
+                />
               ) : (
                 <HideImageOutlined sx={{ height: "15vh", width: 200 }} />
               )}

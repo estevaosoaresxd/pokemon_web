@@ -7,7 +7,6 @@ import {
   Container,
   Skeleton,
   Pagination,
-  Modal,
 } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { SearchOff } from "@mui/icons-material";
@@ -43,7 +42,7 @@ export default function Home() {
         pokemon.name.toLowerCase().includes(query)
       );
 
-      if (filtered.length == 0) {
+      if (filtered.length === 0) {
         const getPokemonByName = async () => {
           try {
             setLoading(true);
@@ -65,15 +64,6 @@ export default function Home() {
     }
   };
 
-  const dataFiltered = useMemo(
-    () => filterData(searchQuery, allPokemons),
-    [searchQuery, allPokemons]
-  );
-
-  const handleChange = (value) => {
-    setPage(value);
-  };
-
   const onTapSearch = () => {
     if (searchQuery.trim().length < 1) {
       setEmptyInput(true);
@@ -81,6 +71,11 @@ export default function Home() {
       filterData(searchQuery, allPokemons);
     }
   };
+
+  const dataFiltered = useMemo(
+    () => filterData(searchQuery, allPokemons),
+    [searchQuery, allPokemons]
+  );
 
   useEffect(() => {
     const getAllByPage = async () => {
@@ -130,15 +125,15 @@ export default function Home() {
               color="text.secondary"
               paragraph
             >
-              Aqui é possível fazer as buscas de seus Pokemóns favoritos que
-              queira buscar junto com a comunicação da PokeAPI
+              Aqui é possível fazer as buscas de seus Pokemóns favoritos junto
+              com a integração da PokeAPI com milhares de pokenóms !
             </Typography>
           </Container>
         </Box>
         <Box>
           <Container maxWidth="sm">
             <SearchInput
-              placeholder="Digite o pokemon"
+              placeholder="Digite o pokemon aqui..."
               onChange={setSearchQuery}
               emptyInput={emptyInput}
               onTapSearch={onTapSearch}
@@ -214,7 +209,7 @@ export default function Home() {
                 size="large"
                 defaultPage={1}
                 siblingCount={5}
-                onChange={(ev, value) => handleChange(value)}
+                onChange={(ev, value) => setPage(value)}
                 color="primary"
               />
             </Container>
