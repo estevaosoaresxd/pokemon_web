@@ -16,8 +16,11 @@ import {
   CardActionArea,
 } from "@mui/material";
 import { verifyTypeColor } from "../utils/utils_pokemons";
+import { usePokemon } from "../../modules/pokemon/PokemonContext";
 
-export default function CardPokemon({ pokemon, onTap }) {
+export default function CardPokemon({ onTap }) {
+  const pokemon = usePokemon();
+
   return (
     <Card
       sx={{

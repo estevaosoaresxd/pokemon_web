@@ -19,6 +19,7 @@ import CardPokemon from "../../shared/components/CardPokemon";
 import ToolbarDefault from "../../shared/components/ToolbarDefault";
 import { themeDefault } from "../../shared/theme/themeDefault";
 import DetailsPokemon from "../../shared/components/DetailsPokemon";
+import { PokemonContextProvider } from "../../modules/pokemon/PokemonContext";
 
 export default function Home() {
   const [allPokemons, setAllPokemons] = useState([]);
@@ -154,13 +155,14 @@ export default function Home() {
             {!loading && dataFiltered && dataFiltered.length > 0 ? (
               dataFiltered.map((pokemon) => (
                 <Grid item key={pokemon.name} xs={11} sm={5} md={3}>
-                  <CardPokemon
-                    pokemon={pokemon}
-                    onTap={() => {
-                      setSelectedPokemon(pokemon);
-                      setShowModal(true);
-                    }}
-                  ></CardPokemon>
+                  <PokemonContextProvider value={pokemon}>
+                    <CardPokemon
+                      onTap={() => {
+                        setSelectedPokemon(pokemon);
+                        setShowModal(true);
+                      }}
+                    />
+                  </PokemonContextProvider>
                 </Grid>
               ))
             ) : !loading ? (
