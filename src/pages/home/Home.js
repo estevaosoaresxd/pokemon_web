@@ -10,26 +10,48 @@ import {
 } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { SearchOff } from "@mui/icons-material";
+
+// SERVICES
 import {
   getAllPokemons,
   getPokemonByNameOrId,
 } from "../../services/PokemonServices";
+
+// THEME
+import { themeDefault } from "../../shared/theme/themeDefault";
+
+// CONTEXT
+import { PokemonContextProvider } from "../../modules/PokemonContext";
+import { useAuth } from "../../modules/AuthContext";
+
+// COMPONENTS
+import LoginForm from "../../shared/components/LoginForm";
+import DetailsPokemon from "../../shared/components/DetailsPokemon";
 import SearchInput from "../../shared/components/SearchInput";
 import CardPokemon from "../../shared/components/CardPokemon";
 import ToolbarDefault from "../../shared/components/ToolbarDefault";
-import { themeDefault } from "../../shared/theme/themeDefault";
-import DetailsPokemon from "../../shared/components/DetailsPokemon";
-import { PokemonContextProvider } from "../../modules/pokemon/PokemonContext";
+import AlertSucess from "../../shared/components/AlertSucess";
+import CreatePokemon from "../../shared/components/CreatePokemon";
 
 export default function Home() {
   const [allPokemons, setAllPokemons] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
-  const [showModal, setShowModal] = useState(false);
+
   const [selectedPokemon, setSelectedPokemon] = useState(null);
   const [emptyInput, setEmptyInput] = useState(false);
+
+  const [showModalPokemon, setShowModalPokemon] = useState(false);
+  const [showModalLogin, setShowModalLogin] = useState(false);
+  const [showModalCreatePokemon, setshowModalCreatePokemon] = useState(false);
+
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
+  const { isAuth, signOut, user } = useAuth();
 
   const filterData = (query, data) => {
     if (emptyInput) {
@@ -78,6 +100,15 @@ export default function Home() {
     [searchQuery, allPokemons]
   );
 
+  const callAlert = (message) => {
+    setAlertMessage(message);
+    setShowAlert(true);
+  };
+
+  useEffect(() => {
+    isAuth();
+  }, []);
+
   useEffect(() => {
     const getAllByPage = async () => {
       try {
@@ -100,8 +131,23 @@ export default function Home() {
 
   return (
     <ThemeProvider theme={themeDefault}>
+      <AlertSucess
+        open={showAlert}
+        onClose={() => setShowAlert(false)}
+        message={alertMessage}
+      />
+
       <CssBaseline />
-      <ToolbarDefault />
+      <ToolbarDefault
+        user={user}
+        onTapEnter={() => setShowModalLogin(true)}
+        onTapLogout={() => {
+          signOut();
+          callAlert("Logoff feito com sucesso");
+        }}
+        onTapNotification={() => {}}
+        onTapPokemon={() => setshowModalCreatePokemon(true)}
+      />
       <main>
         <Box
           sx={{
@@ -143,12 +189,24 @@ export default function Home() {
         </Box>
         <Container sx={{ py: 8 }}>
           <DetailsPokemon
-            open={showModal}
+            open={showModalPokemon}
             pokemon={selectedPokemon}
             handleClose={() => {
               setSelectedPokemon(null);
-              setShowModal(false);
+              setShowModalPokemon(false);
             }}
+          />
+
+          <LoginForm
+            open={showModalLogin}
+            onLogin={() => callAlert("Login efetuado com sucesso.")}
+            handleClose={() => setShowModalLogin(false)}
+          />
+
+          <CreatePokemon
+            open={showModalCreatePokemon}
+            onCreate={() => callAlert("Pokémon criado com sucesso.")}
+            handleClose={() => setshowModalCreatePokemon(false)}
           />
 
           <Grid container spacing={3}>
@@ -159,7 +217,7 @@ export default function Home() {
                     <CardPokemon
                       onTap={() => {
                         setSelectedPokemon(pokemon);
-                        setShowModal(true);
+                        setShowModalPokemon(true);
                       }}
                     />
                   </PokemonContextProvider>

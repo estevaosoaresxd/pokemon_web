@@ -1,9 +1,4 @@
-import {
-  Add,
-  BrokenImage,
-  HideImage,
-  HideImageOutlined,
-} from "@mui/icons-material";
+import { Add, BrokenImage, HideImageOutlined } from "@mui/icons-material";
 import {
   Card,
   CardMedia,
@@ -16,7 +11,7 @@ import {
   CardActionArea,
 } from "@mui/material";
 import { verifyTypeColor } from "../utils/utils_pokemons";
-import { usePokemon } from "../../modules/pokemon/PokemonContext";
+import { usePokemon } from "../../modules/PokemonContext";
 
 export default function CardPokemon({ onTap }) {
   const pokemon = usePokemon();
@@ -26,7 +21,7 @@ export default function CardPokemon({ onTap }) {
       sx={{
         borderRadius: 5,
         backgroundImage: `linear-gradient(180deg, ${verifyTypeColor(
-          pokemon.types[0].type.name
+          pokemon.type
         )},white)`,
       }}
     >
@@ -37,7 +32,7 @@ export default function CardPokemon({ onTap }) {
         <CardMedia
           component="div"
           sx={
-            pokemon.sprites.front_default
+            pokemon.image
               ? {
                   display: "flex",
                   flexDirection: "column",
@@ -52,9 +47,9 @@ export default function CardPokemon({ onTap }) {
                 }
           }
           src={<BrokenImage />}
-          image={pokemon.sprites.front_default}
+          image={pokemon.image}
           children={
-            !pokemon.sprites.front_default && (
+            !pokemon.image && (
               <HideImageOutlined sx={{ height: "15vh", width: 200 }} />
             )
           }
@@ -74,27 +69,23 @@ export default function CardPokemon({ onTap }) {
             {pokemon.name.toUpperCase()}
           </Typography>
           <Box>
-            {pokemon.types.map((types) => (
-              <Button
-                variant="contained"
-                sx={{
-                  fontSize: 16,
-                  backgroundColor: verifyTypeColor(types.type.name),
-                  backgroundColor: verifyTypeColor(types.type.name),
-                  ":focus": {
-                    backgroundColor: verifyTypeColor(types.type.name),
-                  },
-
-                  ":hover": {
-                    backgroundColor: verifyTypeColor(types.type.name),
-                  },
-                  borderRadius: 5,
-                  mr: 1,
-                }}
-              >
-                {types.type.name}
-              </Button>
-            ))}
+            <Button
+              variant="contained"
+              sx={{
+                fontSize: 16,
+                backgroundColor: verifyTypeColor(pokemon.type),
+                ":focus": {
+                  backgroundColor: verifyTypeColor(pokemon.type),
+                },
+                ":hover": {
+                  backgroundColor: verifyTypeColor(pokemon.type),
+                },
+                borderRadius: 5,
+                mr: 1,
+              }}
+            >
+              {pokemon.type}
+            </Button>
           </Box>
         </CardContent>
         <CardActions

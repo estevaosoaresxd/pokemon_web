@@ -1,32 +1,88 @@
-import { AppBar, Box, Toolbar, Typography, colors } from "@mui/material";
-import { CatchingPokemonOutlined } from "@mui/icons-material";
+import {
+  AppBar,
+  Box,
+  Button,
+  Toolbar,
+  Typography,
+  colors,
+  Badge,
+} from "@mui/material";
+import {
+  Add,
+  CatchingPokemonOutlined,
+  Login,
+  Logout,
+  Notifications,
+} from "@mui/icons-material";
 
 import image from "../assets/logo.png";
 
-export default function ToolbarDefault() {
+export default function ToolbarDefault({
+  user,
+  onTapPokemon,
+  onTapNotification,
+  onTapLogout,
+  onTapEnter,
+}) {
   return (
     <AppBar position="relative">
-      <Toolbar>
+      <Toolbar
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
+            flexDirection: "row",
             alignItems: "center",
           }}
         >
-          <img src={image} width={150}></img>
-          <Typography
-            variant="h4"
+          <Box
             sx={{
-              color: colors.yellow[600],
-              textShadow: `3px 3px 1px ${colors.blue[500]}`,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
             }}
           >
-            Web
-          </Typography>
+            <img alt="pokemon-logo" src={image} width={150}></img>
+            <Typography
+              variant="h4"
+              sx={{
+                color: colors.yellow[600],
+                textShadow: `3px 3px 1px ${colors.blue[500]}`,
+              }}
+            >
+              Web
+            </Typography>
+          </Box>
+          <CatchingPokemonOutlined fontSize="large" sx={{ mr: 2 }} />
         </Box>
-
-        <CatchingPokemonOutlined fontSize="large" sx={{ mr: 2 }} />
+        <Box>
+          <Button color="inherit" onClick={onTapPokemon}>
+            <Add color="inherit" sx={{ mr: 1 }} />
+            CRIAR POKEMON
+          </Button>
+          <Button color="inherit" onClick={onTapNotification}>
+            <Badge badgeContent={4} color="secondary" sx={{ mr: 1 }}>
+              <Notifications color="inherit" />
+            </Badge>
+            NOTIFICAÇÕES
+          </Button>
+          {user != null && user.token ? (
+            <Button color="inherit" onClick={onTapLogout}>
+              <Logout sx={{ mr: 1 }} />
+              SAIR
+            </Button>
+          ) : (
+            <Button color="inherit" onClick={onTapEnter}>
+              <Login sx={{ mr: 1 }} />
+              ENTRAR
+            </Button>
+          )}
+        </Box>
       </Toolbar>
     </AppBar>
   );

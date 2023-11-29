@@ -38,6 +38,8 @@ const verifyTypeColor = (type) => {
       return colors.common.black;
     case "steel":
       return colors.blueGrey[500];
+    default:
+      return colors.grey[600];
   }
 };
 

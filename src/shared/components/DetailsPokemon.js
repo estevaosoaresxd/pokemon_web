@@ -51,6 +51,30 @@ export default function DetailsPokemon({ pokemon, open, handleClose }) {
     },
   }));
 
+  const valueStatus = () => {
+    const status = [];
+
+    const keys = Object.keys(pokemon);
+
+    keys.forEach((e) => {
+      if (
+        e == "hp" ||
+        e == "attack" ||
+        e == "defense" ||
+        e == "specialAttack" ||
+        e == "specialDefense" ||
+        e == "speed"
+      ) {
+        status.push({
+          name: e,
+          value: pokemon[e],
+        });
+      }
+    });
+
+    return status;
+  };
+
   return (
     <Modal
       aria-labelledby="transition-modal-title"
@@ -90,12 +114,8 @@ export default function DetailsPokemon({ pokemon, open, handleClose }) {
                 flex: 0.5,
               }}
             >
-              {pokemon.sprites.front_default ? (
-                <img
-                  src={pokemon.sprites.front_default}
-                  alt="Imagem Pokemon"
-                  width={"100%"}
-                />
+              {pokemon.image ? (
+                <img src={pokemon.image} alt="Imagem Pokemon" width={"100%"} />
               ) : (
                 <HideImageOutlined sx={{ height: "15vh", width: 200 }} />
               )}
@@ -113,26 +133,24 @@ export default function DetailsPokemon({ pokemon, open, handleClose }) {
               </Typography>
 
               <Box mt={2}>
-                {pokemon.types.map((types) => (
-                  <Button
-                    variant="contained"
-                    sx={{
-                      fontSize: 16,
-                      backgroundColor: verifyTypeColor(types.type.name),
-                      ":focus": {
-                        backgroundColor: verifyTypeColor(types.type.name),
-                      },
+                <Button
+                  variant="contained"
+                  sx={{
+                    fontSize: 16,
+                    backgroundColor: verifyTypeColor(pokemon.type),
+                    ":focus": {
+                      backgroundColor: verifyTypeColor(pokemon.type),
+                    },
 
-                      ":hover": {
-                        backgroundColor: verifyTypeColor(types.type.name),
-                      },
-                      borderRadius: 5,
-                      mr: 1,
-                    }}
-                  >
-                    {types.type.name}
-                  </Button>
-                ))}
+                    ":hover": {
+                      backgroundColor: verifyTypeColor(pokemon.type),
+                    },
+                    borderRadius: 5,
+                    mr: 1,
+                  }}
+                >
+                  {pokemon.type}
+                </Button>
               </Box>
 
               <Container
@@ -217,7 +235,7 @@ export default function DetailsPokemon({ pokemon, open, handleClose }) {
                 Status
               </Typography>
 
-              {pokemon.stats.map((status) => (
+              {valueStatus().map((status) => (
                 <Box
                   sx={{
                     display: "flex",
@@ -235,10 +253,10 @@ export default function DetailsPokemon({ pokemon, open, handleClose }) {
                     }}
                   >
                     <Typography id="transition-modal-description" mr={1}>
-                      {status.stat.name}
+                      {status.name}
                     </Typography>
                     <Typography id="transition-modal-title" fontWeight="bold">
-                      {status.base_stat}
+                      {status.value}
                     </Typography>
                   </Box>
                   <Box
@@ -250,7 +268,7 @@ export default function DetailsPokemon({ pokemon, open, handleClose }) {
                   >
                     <BorderLinearProgress
                       variant="determinate"
-                      value={status.base_stat > 100 ? 100 : status.base_stat}
+                      value={status.value > 100 ? 100 : status.value}
                     />
                   </Box>
                 </Box>
