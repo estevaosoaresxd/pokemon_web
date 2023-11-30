@@ -17,7 +17,6 @@ import {
 import { Close } from "@mui/icons-material";
 
 import image from "../assets/logo.png";
-import { loginWithUsernameAndPassword } from "../../services/LoginService";
 import { useState } from "react";
 import { createPokemon } from "../../services/PokemonServices";
 

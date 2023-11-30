@@ -61,10 +61,13 @@ export default function ToolbarDefault({
           <CatchingPokemonOutlined fontSize="large" sx={{ mr: 2 }} />
         </Box>
         <Box>
-          <Button color="inherit" onClick={onTapPokemon}>
-            <Add color="inherit" sx={{ mr: 1 }} />
-            CRIAR POKEMON
-          </Button>
+          {user != null && user.token && (
+            <Button color="inherit" onClick={onTapPokemon}>
+              <Add color="inherit" sx={{ mr: 1 }} />
+              CRIAR POKEMON
+            </Button>
+          )}
+
           <Button color="inherit" onClick={onTapNotification}>
             <Badge badgeContent={4} color="secondary" sx={{ mr: 1 }}>
               <Notifications color="inherit" />

@@ -14,7 +14,7 @@ import { SearchOff } from "@mui/icons-material";
 // SERVICES
 import {
   getAllPokemons,
-  getPokemonByNameOrId,
+  getPokemonByName,
 } from "../../services/PokemonServices";
 
 // THEME
@@ -32,6 +32,10 @@ import CardPokemon from "../../shared/components/CardPokemon";
 import ToolbarDefault from "../../shared/components/ToolbarDefault";
 import AlertSucess from "../../shared/components/AlertSucess";
 import CreatePokemon from "../../shared/components/CreatePokemon";
+import NotificationsList from "../../shared/components/NotificationsList";
+
+// SOCKET
+import { socket } from "../../socket";
 
 export default function Home() {
   const [allPokemons, setAllPokemons] = useState([]);
@@ -47,11 +51,15 @@ export default function Home() {
   const [showModalPokemon, setShowModalPokemon] = useState(false);
   const [showModalLogin, setShowModalLogin] = useState(false);
   const [showModalCreatePokemon, setshowModalCreatePokemon] = useState(false);
+  const [showModalNotifications, setShowModalNotifications] = useState(false);
 
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
 
   const { isAuth, signOut, user } = useAuth();
+
+  const [isConnected, setIsConnected] = useState(socket.connected);
+  const [fooEvents, setFooEvents] = useState([]);
 
   const filterData = (query, data) => {
     if (emptyInput) {
@@ -66,11 +74,11 @@ export default function Home() {
       );
 
       if (filtered.length === 0) {
-        const getPokemonByName = async () => {
+        const getPokemon = async () => {
           try {
             setLoading(true);
 
-            let res = await getPokemonByNameOrId(query);
+            let res = await getPokemonByName(query);
 
             setAllPokemons([...allPokemons, res]);
           } catch (e) {
@@ -80,7 +88,7 @@ export default function Home() {
           }
         };
 
-        return getPokemonByName(query);
+        return getPokemon();
       } else {
         return filtered;
       }
@@ -105,8 +113,33 @@ export default function Home() {
     setShowAlert(true);
   };
 
+  const socketIO = () => {
+    function onConnect() {
+      setIsConnected(true);
+    }
+
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+
+    function onFooEvent(value) {
+      setFooEvents((previous) => [...previous, value]);
+    }
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("foo", onFooEvent);
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("foo", onFooEvent);
+    };
+  };
+
   useEffect(() => {
     isAuth();
+    socketIO();
   }, []);
 
   useEffect(() => {
@@ -145,7 +178,7 @@ export default function Home() {
           signOut();
           callAlert("Logoff feito com sucesso");
         }}
-        onTapNotification={() => {}}
+        onTapNotification={() => setShowModalNotifications(true)}
         onTapPokemon={() => setshowModalCreatePokemon(true)}
       />
       <main>
@@ -175,18 +208,29 @@ export default function Home() {
               Aqui é possível fazer as buscas de seus Pokemóns favoritos junto
               com a integração da PokeAPI com milhares de pokenóms !
             </Typography>
+            <Typography
+              variant="h5"
+              align="center"
+              color="text.secondary"
+              paragraph
+            >
+              {isConnected ? "Conectado" : "Desconectado"}
+            </Typography>
           </Container>
         </Box>
-        <Box>
-          <Container maxWidth="sm">
-            <SearchInput
-              placeholder="Digite o pokemon aqui..."
-              onChange={setSearchQuery}
-              emptyInput={emptyInput}
-              onTapSearch={onTapSearch}
-            ></SearchInput>
-          </Container>
-        </Box>
+        {user != null && user.token && (
+          <Box>
+            <Container maxWidth="sm">
+              <SearchInput
+                placeholder="Digite o pokemon aqui..."
+                onChange={setSearchQuery}
+                emptyInput={emptyInput}
+                onTapSearch={onTapSearch}
+              ></SearchInput>
+            </Container>
+          </Box>
+        )}
+
         <Container sx={{ py: 8 }}>
           <DetailsPokemon
             open={showModalPokemon}
@@ -207,6 +251,11 @@ export default function Home() {
             open={showModalCreatePokemon}
             onCreate={() => callAlert("Pokémon criado com sucesso.")}
             handleClose={() => setshowModalCreatePokemon(false)}
+          />
+
+          <NotificationsList
+            open={showModalNotifications}
+            handleClose={() => setShowModalNotifications(false)}
           />
 
           <Grid container spacing={3}>
@@ -264,7 +313,7 @@ export default function Home() {
               }}
             >
               <Pagination
-                count={Math.ceil(count / 20) + 1}
+                count={Math.ceil(count / 20)}
                 shape="rounded"
                 size="large"
                 defaultPage={1}

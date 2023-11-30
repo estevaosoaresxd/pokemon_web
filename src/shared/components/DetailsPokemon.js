@@ -58,12 +58,12 @@ export default function DetailsPokemon({ pokemon, open, handleClose }) {
 
     keys.forEach((e) => {
       if (
-        e == "hp" ||
-        e == "attack" ||
-        e == "defense" ||
-        e == "specialAttack" ||
-        e == "specialDefense" ||
-        e == "speed"
+        e === "hp" ||
+        e === "attack" ||
+        e === "defense" ||
+        e === "specialAttack" ||
+        e === "specialDefense" ||
+        e === "speed"
       ) {
         status.push({
           name: e,

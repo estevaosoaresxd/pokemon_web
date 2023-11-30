@@ -16,40 +16,8 @@ const createPokemon = async (data) => {
   });
 };
 
-// const getAllPokemons = async (page, count) => {
-//   if (page) page = page - 1;
-
-//   let offset;
-
-//   if (count > 1) {
-//     var offsetTotal = (page ?? pageBase) * takeBase;
-
-//     offset = offsetTotal > count ? count - takeBase : offsetTotal;
-//   }
-
-//   var res = await axios
-//     .get(`${process.env.REACT_APP_API_URL}/pokemon`, {
-//       params: {
-//         limit: takeBase,
-//         offset: offset,
-//       },
-//     })
-//     .then((e) => e.data);
-
-//   var pokemons = await axios.all(
-//     res.results.map((pokemon) => axios.get(pokemon.url).then((e) => e.data))
-//   );
-
-//   return {
-//     count: res.count,
-//     pokemons: pokemons,
-//   };
-// };
-
 const getAllPokemons = async (page, count) => {
   if (page) page = page - 1;
-
-  const { token } = JSON.parse(localStorage.getItem("user"));
 
   var res = await axios
     .get(`${url}/pokemon`, {
@@ -57,14 +25,8 @@ const getAllPokemons = async (page, count) => {
         limit: takeBase,
         page: page,
       },
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-type": "application/json; charset=UTF-8",
-      },
     })
     .then((e) => e.data.data);
-
-  console.log(res);
 
   return {
     count: res.count,
@@ -72,10 +34,17 @@ const getAllPokemons = async (page, count) => {
   };
 };
 
-const getPokemonByNameOrId = async (nameOrId) => {
+const getPokemonByName = async (name) => {
+  const { token } = JSON.parse(localStorage.getItem("user"));
+
   return await axios
-    .get(`${process.env.REACT_APP_API_URL}/pokemon/${nameOrId.toLowerCase()}`)
+    .get(`${url}/pokemon/name/${name.toLowerCase()}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
     .then((res) => res.data);
 };
 
-export { getAllPokemons, getPokemonByNameOrId, createPokemon };
+export { getAllPokemons, getPokemonByName, createPokemon };
