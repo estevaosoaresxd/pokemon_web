@@ -189,6 +189,7 @@ export default function CreatePokemon({ open, onCreate, handleClose }) {
       .then((e) => {
         if (e.status == 201) {
           handleClose();
+          onCreate();
         }
       })
       .catch((e) => {

@@ -76,7 +76,7 @@ export default function NotificationsList({
           >
             {notifications &&
               notifications.map((data) => (
-                <ListItem>
+                <ListItem key={new Date(data.date).toLocaleString()}>
                   <ListItemAvatar>
                     <Avatar>
                       <Notifications />

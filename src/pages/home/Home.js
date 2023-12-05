@@ -61,6 +61,8 @@ export default function Home() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [notifications, setNotifications] = useState([]);
 
+  const [isLoaded, setIsLoaded] = useState(false);
+
   const filterData = (query, data) => {
     if (emptyInput) {
       setEmptyInput(false);
@@ -113,54 +115,69 @@ export default function Home() {
     setShowAlert(true);
   };
 
-  const socketIO = () => {
-    function onConnect() {
-      setIsConnected(true);
-    }
+  function onConnect() {
+    setIsConnected(true);
+  }
 
-    function onDisconnect() {
-      setIsConnected(false);
-    }
+  function onDisconnect() {
+    setIsConnected(false);
+  }
 
-    function onNotification(value) {
-      console.log("entered notificaiton");
-      console.log(value);
+  function onNotification(value) {
+    console.log(value);
+    console.log(notifications);
+    if (!notifications.includes(value)) {
       setNotifications((previous) => [...previous, value]);
+      getAllByPage();
     }
+  }
 
+  const socketIO = () => {
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
-    socket.on("notification", onNotification);
+    socket.on("message", onNotification);
 
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
-      socket.off("notification", onNotification);
+      socket.off("message", onNotification);
     };
   };
 
   useEffect(() => {
-    isAuth();
-    socketIO();
+    setIsLoaded(true);
+
+    console.log(isLoaded);
+
+    if (!isLoaded) {
+      isAuth();
+      socketIO();
+    }
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("message", onNotification);
+    };
   }, []);
 
-  useEffect(() => {
-    const getAllByPage = async () => {
-      try {
-        setLoading(true);
+  const getAllByPage = async () => {
+    try {
+      setLoading(true);
 
-        let res = await getAllPokemons(page, count);
+      let res = await getAllPokemons(page, count);
 
-        setCount(res.count);
+      setCount(res.count);
 
-        if (res.pokemons) {
-          setAllPokemons(res.pokemons);
-        }
-      } finally {
-        setLoading(false);
+      if (res.pokemons) {
+        setAllPokemons(res.pokemons);
       }
-    };
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     getAllByPage();
   }, [page]);
 
@@ -255,7 +272,10 @@ export default function Home() {
           <CreatePokemon
             key="createPokemon"
             open={showModalCreatePokemon}
-            onCreate={() => callAlert("Pokémon criado com sucesso.")}
+            onCreate={() => {
+              callAlert("Pokémon criado com sucesso.");
+              getAllByPage();
+            }}
             handleClose={() => setshowModalCreatePokemon(false)}
           />
 
