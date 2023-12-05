@@ -88,6 +88,9 @@ export default function NotificationsList({
                   />
                 </ListItem>
               ))}
+            {notifications.length == 0 && (
+              <Typography variant="h8">Sem notificações.</Typography>
+            )}
           </List>
         </Container>
       </Container>

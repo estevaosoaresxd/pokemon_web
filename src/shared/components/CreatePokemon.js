@@ -64,7 +64,7 @@ const currencies = [
   },
   {
     value: "ground",
-    label: "terra",
+    label: "Terra",
   },
   {
     value: "fairy",

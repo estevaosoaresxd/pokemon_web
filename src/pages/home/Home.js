@@ -124,8 +124,6 @@ export default function Home() {
   }
 
   function onNotification(value) {
-    console.log(value);
-    console.log(notifications);
     if (!notifications.includes(value)) {
       setNotifications((previous) => [...previous, value]);
       getAllByPage();
@@ -144,23 +142,6 @@ export default function Home() {
     };
   };
 
-  useEffect(() => {
-    setIsLoaded(true);
-
-    console.log(isLoaded);
-
-    if (!isLoaded) {
-      isAuth();
-      socketIO();
-    }
-
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      socket.off("message", onNotification);
-    };
-  }, []);
-
   const getAllByPage = async () => {
     try {
       setLoading(true);
@@ -176,6 +157,21 @@ export default function Home() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    setIsLoaded(true);
+
+    if (!isLoaded) {
+      isAuth();
+      socketIO();
+    }
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("message", onNotification);
+    };
+  }, []);
 
   useEffect(() => {
     getAllByPage();
