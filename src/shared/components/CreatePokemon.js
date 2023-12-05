@@ -326,9 +326,10 @@ export default function CreatePokemon({ open, onCreate, handleClose }) {
                 </Grid>
 
                 {valuesPokemon.map((option) => (
-                  <Grid item xs={option.grid}>
+                  <Grid key={option.value} item xs={option.grid}>
                     <TextField
                       margin="normal"
+                      key={option.value}
                       id={option.value}
                       required
                       fullWidth

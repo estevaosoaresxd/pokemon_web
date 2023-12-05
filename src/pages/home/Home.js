@@ -128,7 +128,7 @@ export default function Home() {
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
-    socket.on("foo", onFooEvent);
+    socket.on("notification", onFooEvent);
 
     return () => {
       socket.off("connect", onConnect);
@@ -206,7 +206,7 @@ export default function Home() {
               paragraph
             >
               Aqui é possível fazer as buscas de seus Pokemóns favoritos junto
-              com a integração da PokeAPI com milhares de pokenóms !
+              com a integração da PokeAPI com milhares de pokémons !
             </Typography>
             <Typography
               variant="h5"
@@ -233,6 +233,7 @@ export default function Home() {
 
         <Container sx={{ py: 8 }}>
           <DetailsPokemon
+            key="details"
             open={showModalPokemon}
             pokemon={selectedPokemon}
             handleClose={() => {
@@ -242,18 +243,21 @@ export default function Home() {
           />
 
           <LoginForm
+            key="login"
             open={showModalLogin}
             onLogin={() => callAlert("Login efetuado com sucesso.")}
             handleClose={() => setShowModalLogin(false)}
           />
 
           <CreatePokemon
+            key="createPokemon"
             open={showModalCreatePokemon}
             onCreate={() => callAlert("Pokémon criado com sucesso.")}
             handleClose={() => setshowModalCreatePokemon(false)}
           />
 
           <NotificationsList
+            key="notifications"
             open={showModalNotifications}
             handleClose={() => setShowModalNotifications(false)}
           />
