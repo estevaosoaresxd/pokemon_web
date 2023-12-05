@@ -23,6 +23,7 @@ export default function ToolbarDefault({
   onTapNotification,
   onTapLogout,
   onTapEnter,
+  totalNotifications,
 }) {
   return (
     <AppBar position="relative">
@@ -69,7 +70,12 @@ export default function ToolbarDefault({
           )}
 
           <Button color="inherit" onClick={onTapNotification}>
-            <Badge badgeContent={4} color="secondary" sx={{ mr: 1 }}>
+            <Badge
+              showZero={true}
+              badgeContent={totalNotifications}
+              color="secondary"
+              sx={{ mr: 1 }}
+            >
               <Notifications color="inherit" />
             </Badge>
             NOTIFICAÇÕES

@@ -28,7 +28,11 @@ const style = {
   borderRadius: 5,
 };
 
-export default function NotificationsList({ open, handleClose }) {
+export default function NotificationsList({
+  open,
+  handleClose,
+  notifications,
+}) {
   return (
     <Modal
       aria-labelledby="transition-modal-title"
@@ -70,30 +74,20 @@ export default function NotificationsList({ open, handleClose }) {
           <List
             sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
           >
-            <ListItem>
-              <ListItemAvatar>
-                <Avatar>
-                  <Notifications />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="Photos" secondary="Jan 9, 2014" />
-            </ListItem>
-            <ListItem>
-              <ListItemAvatar>
-                <Avatar>
-                  <Notifications />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="Work" secondary="Jan 7, 2014" />
-            </ListItem>
-            <ListItem>
-              <ListItemAvatar>
-                <Avatar>
-                  <Notifications />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="Vacation" secondary="July 20, 2014" />
-            </ListItem>
+            {notifications &&
+              notifications.map((data) => (
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <Notifications />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={data.message}
+                    secondary={new Date(data.date).toLocaleString()}
+                  />
+                </ListItem>
+              ))}
           </List>
         </Container>
       </Container>

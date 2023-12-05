@@ -59,7 +59,7 @@ export default function Home() {
   const { isAuth, signOut, user } = useAuth();
 
   const [isConnected, setIsConnected] = useState(socket.connected);
-  const [fooEvents, setFooEvents] = useState([]);
+  const [notifications, setNotifications] = useState([]);
 
   const filterData = (query, data) => {
     if (emptyInput) {
@@ -122,18 +122,20 @@ export default function Home() {
       setIsConnected(false);
     }
 
-    function onFooEvent(value) {
-      setFooEvents((previous) => [...previous, value]);
+    function onNotification(value) {
+      console.log("entered notificaiton");
+      console.log(value);
+      setNotifications((previous) => [...previous, value]);
     }
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
-    socket.on("notification", onFooEvent);
+    socket.on("notification", onNotification);
 
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
-      socket.off("foo", onFooEvent);
+      socket.off("notification", onNotification);
     };
   };
 
@@ -173,6 +175,7 @@ export default function Home() {
       <CssBaseline />
       <ToolbarDefault
         user={user}
+        totalNotifications={notifications.length ?? 0}
         onTapEnter={() => setShowModalLogin(true)}
         onTapLogout={() => {
           signOut();
@@ -260,12 +263,13 @@ export default function Home() {
             key="notifications"
             open={showModalNotifications}
             handleClose={() => setShowModalNotifications(false)}
+            notifications={notifications}
           />
 
           <Grid container spacing={3}>
             {!loading && dataFiltered && dataFiltered.length > 0 ? (
               dataFiltered.map((pokemon) => (
-                <Grid item key={pokemon.name} xs={11} sm={5} md={3}>
+                <Grid item key={pokemon.id} xs={11} sm={5} md={3}>
                   <PokemonContextProvider value={pokemon}>
                     <CardPokemon
                       onTap={() => {

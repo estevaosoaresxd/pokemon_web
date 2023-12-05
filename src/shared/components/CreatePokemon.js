@@ -187,7 +187,9 @@ export default function CreatePokemon({ open, onCreate, handleClose }) {
 
     await createPokemon(pokemonData)
       .then((e) => {
-        console.log(e, "sucess");
+        if (e.status == 201) {
+          handleClose();
+        }
       })
       .catch((e) => {
         console.log(e, "error");
