@@ -17,7 +17,6 @@ import {
 import { Close } from "@mui/icons-material";
 
 import image from "../assets/logo.png";
-import { useState } from "react";
 import { createPokemon } from "../../services/PokemonServices";
 
 const style = {
@@ -138,8 +137,6 @@ const valuesPokemon = [
 ];
 
 export default function CreatePokemon({ open, onCreate, handleClose }) {
-  const [invalidUser, setInvalidUser] = useState(false);
-
   async function getBase64(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -152,8 +149,6 @@ export default function CreatePokemon({ open, onCreate, handleClose }) {
   }
 
   const handleSubmit = async (event) => {
-    setInvalidUser(false);
-
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
@@ -187,7 +182,7 @@ export default function CreatePokemon({ open, onCreate, handleClose }) {
 
     await createPokemon(pokemonData)
       .then((e) => {
-        if (e.status == 201) {
+        if (e.status === 201) {
           handleClose();
           onCreate();
         }
